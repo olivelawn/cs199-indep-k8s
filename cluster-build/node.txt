@@ -1,0 +1,37 @@
+# insure running ubuntu 18.04, disable swap
+lsb_release -a
+swapoff -a
+
+#install, enable, test docker
+sudo apt-get update
+sudo apt install docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo docker run hello-world
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+sudo apt-get update
+sudo apt-get install kubeadm
+
+sudo apt-mark hold kubeadm kubelet kubectl docker.io
+sudo apt-mark showhold
+
+
+# join node to the cluster
+# Assuming worst case scenario, you no longer know the join string output from the master on install
+# if you lose join string. Below cmd likely doesn’t return output.  On the MASTER:
+kubeadm token list
+# above should return empty, if so create new token:
+kubeadm token create
+kubeadm token list
+# output will look like below:
+# fgrwpb.uhyapbanbzc89gsm   23h         2021-05-21T17:12:31Z   authentication,signing   <none>  system:bootstrappers:kubeadm:default-node-token
+# copy 1st string above, i.e. frgwpb…  <- this need to be pasted into KUBE_ADM_TOKEN_LIST below
+
+# Next get discovery token ca cert hash:
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+# copy the output of above command   <- this need to be pasted into OPENSSL_X509 below
+
+# Now on the node, join the cluster
+# sudo kubeadm join 10.0.2.4:6443 --token KUBE_ADM_TOKEN_LIST --discovery-token-ca-cert-hash sha256:OPENSSL_X509

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock-rsi
+  labels:
+    app: stock-rsi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stock-rsi
+  template:
+    metadata:
+      labels:
+        app: stock-rsi
+    spec:
+      containers:
+      - name: stock-rsi
+        image: pjohn07/stock-rsi-k8s

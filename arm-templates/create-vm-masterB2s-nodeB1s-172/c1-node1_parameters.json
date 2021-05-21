@@ -1,0 +1,101 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westus2"
+        },
+        "networkInterfaceName": {
+            "value": "c1-node1890"
+        },
+        "networkSecurityGroupName": {
+            "value": "c1-node1-nsg"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ]
+        },
+        "subnetName": {
+            "value": "default"
+        },
+        "virtualNetworkName": {
+            "value": "k8s3_rg-vnet"
+        },
+        "addressPrefixes": {
+            "value": [
+                "172.0.0.0/24"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "addressPrefix": "172.0.0.0/24"
+                    }
+                }
+            ]
+        },
+        "publicIpAddressName": {
+            "value": "c1-node1-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": {
+            "value": "Basic"
+        },
+        "virtualMachineName": {
+            "value": "c1-node1"
+        },
+        "virtualMachineComputerName": {
+            "value": "c1-node1"
+        },
+        "virtualMachineRG": {
+            "value": "k8s3_rg"
+        },
+        "osDiskType": {
+            "value": "Premium_LRS"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_B1s"
+        },
+        "adminUsername": {
+            "value": "parker"
+        },
+        "adminPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5gs6DKKPmrIPTCzB8hw4LXVewhv5CWyvWo6Nsqy8Uj7wgjDLsAoWyJNrX2sxFSqPShLiar01vT1yucHvnqZ8H3ghGWQXCR3+q3FoOhAK47F5vYIod1g8+uBEV35ykSfdqAvaRUFLcmJcbAquT+CM+ow579HeS3E49jaR19A7tKRskOAS2TwDRv1hOgAS0RJsTRlR+LKjvWwV9Ctg97eC58X8xyN5mzQtdhuz15Y4FtuL+3sF4FNGSV15IAiKZvA5L+PElOVfq4kjUNdNogWpBi9DDTW32nI/3T5JpT+A/Uw8jBXjT49o8oDbr9akXDdEvrVYuVb43OxZ+jg9ZOdHfQ== Parker@Parker.local"
+        },
+        "autoShutdownStatus": {
+            "value": "Enabled"
+        },
+        "autoShutdownTime": {
+            "value": "21:00"
+        },
+        "autoShutdownTimeZone": {
+            "value": "Pacific Standard Time"
+        },
+        "autoShutdownNotificationStatus": {
+            "value": "Enabled"
+        },
+        "autoShutdownNotificationLocale": {
+            "value": "en"
+        },
+        "autoShutdownNotificationEmail": {
+            "value": "pjohn07lc@yahoo.com"
+        }
+    }
+}

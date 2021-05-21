@@ -1,0 +1,41 @@
+# insure running ubuntu 18.04
+lsb_release -a
+# Kubernetes  master doesn’t handle swap drives gracefully, turn off and insure enuff RAM, at least 2GB
+swapoff -a
+
+#install, enable, test docker
+sudo apt-get update
+sudo apt install docker.io
+sudo systemctl start docker; sudo systemctl enable docker
+sudo docker run hello-world
+
+#install kubeadm, which in turn installs kubelet, and kubectl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+sudo apt-get update
+sudo apt-get install kubeadm
+
+# hold packages so they don’t auto update
+sudo apt-mark hold kubeadm kubelet kubectl docker.io
+sudo apt-mark showhold
+
+# initialize Kubernetes using private network 192.168.0.0/16. This network has nothing to
+# to do with the VM’s in the cluster. This is the separate network exclusive to pod networking
+# this is the “flat” network that the CNI “overlay” simulates in software.
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+
+# kubeadm will spit out a string to join nodes into the cluster…it might looks like below
+# kubeadm join 10.0.2.4:6443 --token yle863.v15hdkt9kpxyepfh --discovery-token-ca-cert-hash sha256:e314db22ddc0633bf5942175dae53dafaf8efa76b651020fec702a58f88a0a08
+
+# copy conf files and secure directory
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# setup cmdline auto completion for kubectl
+echo 'source <(kubectl completion bash)' >>~/.bashrc
+
+# note: Coredns pods sit in pending until calico/weave-net
+
+# Install weave CNI/network overlay for pod to pod networking.
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"

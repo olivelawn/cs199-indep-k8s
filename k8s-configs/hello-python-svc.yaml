@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-python-svc
+  labels:
+    app: hello-python-svc
+spec:
+  selector:
+    app: hello-python
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
